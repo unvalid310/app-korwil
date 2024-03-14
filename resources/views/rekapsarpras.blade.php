@@ -1,9 +1,9 @@
 <table>
     <tr>
-        <td colspan=7 align="center">REKAP DATA SARANA DAN PRASARANA</td>
+        <td colspan="7" align="center">REKAP DATA SARANA DAN PRASARANA</td>
     </tr>
     <tr>
-        <td colspan=7 align="center">TAHUN PELAJARAN {{ $sekolah->tahun_ajar }}</td>
+        <td colspan="7" align="center">TAHUN PELAJARAN {{ $sekolah->tahun_ajar }}</td>
     </tr>
     <tr style="height: 17px"></tr>
     <tr>
@@ -36,15 +36,16 @@
     </tr>
     <tr style="height: 17px"></tr>
     <tr>
-        <td rowspan=2 align="center" width="43px">NO</td>
-        <td rowspan=2 colspan="2" align="center" width="150px">RUANGAN</td>
-        <td colspan="3" align="center">KONDISI</td>
-        <td align="center">JUMLAH</td>
+        <td rowspan=2 align="center" width="43px" style="vertical-align: middle; border: 2px solid #000">NO</td>
+        <td rowspan=2 colspan="2" align="center" width="150px"
+            style="vertical-align: middle; border: 2px solid #000">RUANGAN</td>
+        <td colspan="3" align="center" style="vertical-align: middle; border: 2px solid #000">KONDISI</td>
+        <td rowspan=2 align="center" style="vertical-align: middle; border: 2px solid #000">JUMLAH</td>
     </tr>
     <tr>
-        <td align="center" width="54px">B</td>
-        <td align="center" width="54px">RR</td>
-        <td align="center" width="54px">RB</td>
+        <td align="center" width="54px" style="vertical-align: middle; border: 2px solid #000">B</td>
+        <td align="center" width="54px" style="vertical-align: middle; border: 2px solid #000">RR</td>
+        <td align="center" width="54px" style="vertical-align: middle; border: 2px solid #000">RB</td>
     </tr>
     {{-- body --}}
     @php
@@ -52,24 +53,24 @@
     @endphp
     @foreach ($sarpras as $item)
         <tr>
-            <td align="center" style="width: 43px">{{ $index }}</td>
-            <td colspan="2" style="width: 150px">{{ $item->ruang }}</td>
-            <td align="center">
+            <td align="center" style="vertical-align: middle; border: 2px solid #000">{{ $index }}</td>
+            <td colspan="2" style="vertical-align: middle; border: 2px solid #000">{{ $item->ruang }}</td>
+            <td align="center" style="vertical-align: middle; border: 2px solid #000">
                 @if ($item->kondisi == 'B')
                     &#10003;
                 @endif
             </td>
-            <td align="center">
+            <td align="center" style="vertical-align: middle; border: 2px solid #000">
                 @if ($item->kondisi == 'RR')
                     &#10003;
                 @endif
             </td>
-            <td align="center">
+            <td align="center" style="vertical-align: middle; border: 2px solid #000">
                 @if ($item->kondisi == 'RB')
                     &#10003;
                 @endif
             </td>
-            <td align="center">{{ $item->jumlah }}</td>
+            <td align="center" style="vertical-align: middle; border: 2px solid #000">{{ $item->jumlah }}</td>
         </tr>
         @php
             $index++;

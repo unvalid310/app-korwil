@@ -94,7 +94,7 @@
                                         <div class="form-group">
                                             <div class="controls">
                                                 <input type="text" class="form-control mydatepicker" name="tanggal"
-                                                    placeholder="Tanggal"
+                                                    placeholder="Periode"
                                                     value="{{ Session::get('tanggal') ? Session::get('tanggal') : '' }}"
                                                     required data-validation-required-message="Pilih tanggal">
                                             </div>

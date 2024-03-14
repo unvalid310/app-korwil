@@ -93,16 +93,21 @@
                     </li>
                 @endcan
 
-                @canany('view siswa', SiswaController::class)
+                @canany(['view siswa', 'rekap siswa'], SiswaController::class)
                     <li> <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
                                 class="ti-id-badge"></i><span class="hide-menu">Siswa</a>
                         <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{ route('/tambah-siswa') }}">Tambah Siswa</a></li>
-                            <li><a href="{{ route('/daftar-siswa') }}">Jumlah Siswa</a></li>
-                            <li><a href="{{ route('/tambah-umur-siswa') }}">Tambah Umur Siswa</a></li>
-                            <li><a href="{{ route('/umur-siswa') }}">Umur Siswa</a></li>
-                            <li><a href="{{ route('/tambah-agama-siswa') }}">Tambah Agama Siswa</a></li>
-                            <li><a href="{{ route('/agama-siswa') }}">Agama Siswa</a></li>
+                            @can('view siswa', SiswaController::class)
+                                <li><a href="{{ route('/tambah-siswa') }}">Tambah Siswa</a></li>
+                                <li><a href="{{ route('/daftar-siswa') }}">Jumlah Siswa</a></li>
+                                <li><a href="{{ route('/tambah-umur-siswa') }}">Tambah Umur Siswa</a></li>
+                                <li><a href="{{ route('/umur-siswa') }}">Umur Siswa</a></li>
+                                <li><a href="{{ route('/tambah-agama-siswa') }}">Tambah Agama Siswa</a></li>
+                                <li><a href="{{ route('/agama-siswa') }}">Agama Siswa</a></li>
+                            @endcan
+                            @can('rekap siswa', SiswaController::class)
+                                <li><a href="{{ URL::to('rekap/siswa') }}">Rekap Siswa</a></li>
+                            @endcan
                         </ul>
                     </li>
                 @endcan

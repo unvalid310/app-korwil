@@ -8,6 +8,8 @@ use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\SiswaAgama;
 use App\Models\SiswaUmur;
+use App\Models\Sekolah;
+use App\Exports\ReportSiswa;
 
 class SiswaController extends Controller
 {
@@ -20,6 +22,7 @@ class SiswaController extends Controller
     public function __construct()
     {
         $this->middleware('permission:view siswa', ['only' => ['index']]);
+        $this->middleware('permission:rekap siswa', ['only' => ['report']]);
     }
 
     public function index() {
@@ -392,4 +395,111 @@ class SiswaController extends Controller
 
     public function edit(Request $request) {}
     public function delete(Request $request) {}
+
+    function report() {
+        $sekolah = Sekolah::orderBy('id_sekolah', 'desc')->get();
+        $tahun_ajar = TahunAjar::orderBy('tahun_ajar', 'desc')->get();
+
+        return view('pages.siswa.rekap-siswa')->with(['tahun_ajar' => $tahun_ajar, 'sekolah' => $sekolah]);
+    }
+
+    public function report_filter(Request $request){
+        $id_ta = $request->id_ta;
+        $tanggal = $request->tanggal;
+        $id_sekolah = $request->id_sekolah;
+        $type = $this->type;
+        $agama = $this->agama;
+        $usia = $this->usia;
+        $warga_negara = $this->warga_negara;
+
+        $siswa = Siswa::where(['id_ta' => $id_ta, 'periode' => $tanggal, 'id_sekolah' => $id_sekolah])->get();
+        $kelas = Kelas::where(['id_ta' => $id_ta, 'id_sekolah' => $id_sekolah])->orderBy('alias', 'asc')->get();
+
+        if (count($kelas) > 0) {
+            $data_siswa = [];
+            $index = 0;
+            foreach ($type as $key => $value) {
+                # code...
+                foreach ($warga_negara as $i => $wA) {
+                    # code...
+                    $data_kelas = [];
+                    foreach ($kelas as $iK => $kelas_) {
+                        # code...
+                        $siswa = Siswa::getAll(['id_ta' =>$id_ta, 'periode'=>$tanggal, 'type' => $type[$key], 'id_kelas' => $kelas_->id_kelas, 'id_sekolah' => $id_sekolah, 'warga_negara' => $warga_negara[$i]]);
+                        if(count($siswa) > 0) {
+                            foreach ($siswa as $iSiswa => $vSiswa);
+                            array_push($data_kelas, ['l'=>$vSiswa->l, 'p' => $vSiswa->p]);
+                        }
+                    }
+                    $data_siswa[$index] = $data_kelas;
+                    $index++;
+                }
+                continue;
+            }
+
+            $data = [];
+            $index = 0;
+            foreach ($type as $key => $value) {
+                # code...
+                foreach ($warga_negara as $i => $wA) {
+                    # code...
+                    $data_agama = [];
+                    foreach ($agama as $iK => $agama_) {
+                        # code...
+                        $siswa = SiswaAgama::getAll(['id_ta' =>$id_ta, 'periode'=> $tanggal, 'type' => $type[$key], 'id_sekolah' => $id_sekolah, 'agama' => $agama_, 'warga_negara' => $warga_negara[$i]]);
+                        foreach ($siswa as $iSiswa => $vSiswa);
+                        // dd($vSiswa);
+                        array_push($data_agama, ['l'=>$vSiswa->l, 'p' => $vSiswa->p]);
+                    }
+                    $data[$index] = $data_agama;
+                    $index++;
+                }
+                continue;
+            }
+
+            $data_kelas = [];
+            foreach ($kelas as $key => $value) {
+                # code...
+                $siswa = SiswaUmur::getAll(['id_ta' =>$id_ta, 'periode'=> $tanggal, 'id_kelas' => $value->id_kelas, 'id_sekolah' => $id_sekolah]);
+                foreach ($siswa as $iSiswa => $vSiswa);
+
+                $data_kelas[$value->id_kelas] = [
+                    'u5' => $vSiswa->u5,
+                    'u6' => $vSiswa->u6,
+                    'u7' => $vSiswa->u7,
+                    'u8' => $vSiswa->u8,
+                    'u9' => $vSiswa->u9,
+                    'u10' => $vSiswa->u10,
+                    'u11' => $vSiswa->u11,
+                    'u12' => $vSiswa->u12,
+                    'u13' => $vSiswa->u13
+                ];
+            }
+
+            // dd($data_kelas[7]['u5']);
+
+            return redirect()->to('/rekap/siswa/')->with([
+                'id_sek' => $id_sekolah,
+                'id_ta' => $id_ta,
+                'tanggal' => $request->tanggal,
+                'kelas' => $kelas,
+                'siswa' => $data_siswa,
+                'agama' => $data,
+                'usia' => $data_kelas,
+            ]);
+        } else {
+            return redirect()->to('/rekap/siswa/')->with([
+                'seswaError' => 'Data rekap tidak ada',
+                'id_sek' => $id_sekolah,
+                'id_ta' => $id_ta,
+                'tanggal' => $request->tanggal,
+            ]);
+        }
+    }
+
+    public function cetak($id_ta, $periode, $id_sekolah) {
+        $tahun_ajar = TahunAjar::where(['id_ta' => $id_ta])->first();
+        return (new ReportSiswa($id_ta, $periode, $id_sekolah))
+            ->download('Rekap keadaan siswa TA ' . str_replace('/', '-', $tahun_ajar->tahun_ajar) . ' periode ' . periode($periode) . '.xlsx');
+    }
 }

@@ -69,6 +69,9 @@ Route::group(
         Route::get('/siswa/tambah-agama', [SiswaController::class, 'add_agama'])->name('/tambah-agama-siswa');
         Route::get('/siswa/proses-agama', [SiswaController::class, 'proses_agama']);
         Route::get('/siswa/update/{id_siswa}', [SiswaController::class, 'update'])->name('/update-siswa');
+        Route::get('/rekap/siswa/', [SiswaController::class, 'report'])->name('rekap-siswa');
+        Route::get('/rekap/siswa/filter', [SiswaController::class, 'report_filter']);
+        Route::get('/rekap/siswa/{id_ta}/{periode}/{id_sekolah}', [SiswaController::class, 'cetak']);
 
         Route::get('/absensi', [AbsensiController::class, 'index'])->name('/absensi-harian');
         Route::get('/absensi/proses', [AbsensiController::class, 'proses']);
