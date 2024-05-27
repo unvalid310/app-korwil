@@ -18,7 +18,7 @@ class StaffController extends Controller
     }
 
     public function index() {
-        $staff = Staff::orderBy('id_staff', 'desc')->get();
+        $staff = Staff::where(['id_sekolah' => session()->get('id_sekolah')])->orderBy('id_staff', 'desc')->get();
         return view('pages.staff.daftar-staff')->with(['staff' => $staff]);
     }
 
